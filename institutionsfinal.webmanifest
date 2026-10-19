@@ -1,0 +1,31 @@
+{
+  "id": "/institutionsfinal/?app=institutionsfinal-2026-10-19",
+  "name": "Institutions Final — ΠΕΓΠ",
+  "short_name": "Inst. Final",
+  "start_url": "/institutionsfinal/index.html",
+  "scope": "/institutionsfinal/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#121417",
+  "theme_color": "#121417",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

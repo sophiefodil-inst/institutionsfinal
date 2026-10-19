@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#121417">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="institutionsfinal.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Institutions Final — ΠΕΓΠ</title>
+<style>
+:root{
+  --bg:#121417; --panel:#1c1f24; --panel2:#262a31; --line:#343a44;
+  --neon:#00e5ff; --neonink:#0b0c0e;
+  --card:#f6f5f1; --ink:#1b1d21; --soft:#646a73; --cline:#e0ddd3;
+  --live:#c9d1db; --known:#4ade80;
+  --l1:#4ade80; --l2:#facc15; --l3:#fb923c; --l4:#f43f5e; --lp:#c084fc;
+  --dim:#9aa3ae;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--bg);color:#eef1f4;
+  font-family:"Segoe UI",Roboto,"Noto Sans","Helvetica Neue",Arial,sans-serif}
+body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.wrap{max-width:640px;margin:0 auto;padding:14px 14px 26px}
+button{font-family:inherit;cursor:pointer;color:inherit}
+
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 12px}
+h1{font-size:19px;margin:0;font-weight:800;letter-spacing:.2px;display:flex;align-items:center;gap:9px}
+h1 .badge{background:var(--neon);color:var(--neonink);font-weight:900;border-radius:7px;
+  width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;font-size:19px}
+h1 em{font-style:normal;color:var(--neon)}
+#counter{font-size:13px;color:var(--dim);white-space:nowrap}
+
+/* ---- levels ---- */
+.levels{display:flex;flex-direction:column;gap:7px;margin-bottom:12px}
+.lv{display:grid;grid-template-columns:1fr 62px 62px 34px;gap:6px;align-items:stretch}
+.lv .name{background:var(--panel);border-radius:9px;border-left:5px solid var(--lc);
+  padding:8px 9px;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.lv .name b{font-size:14px;line-height:1.15}
+.lv .name small{font-size:11px;color:var(--dim);margin-top:2px}
+.pb{background:var(--panel);border:2px solid transparent;border-radius:9px;padding:6px 2px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.pb .num{font-size:20px;font-weight:800}
+.pb .lbl{font-size:9.5px;letter-spacing:.8px;text-transform:uppercase;color:var(--dim);margin-top:4px}
+.pb.live .num{color:var(--live)}
+.pb.known .num{color:var(--known)}
+.pb.on{border-color:var(--neon);background:var(--panel2)}
+.pb.on .lbl{color:#fff}
+.pb:disabled{opacity:.35}
+.rst{background:none;border:1px solid var(--line);border-radius:9px;color:var(--dim);font-size:16px;padding:0}
+.lv.fixed{grid-template-columns:1fr}
+.fixbtn{background:var(--panel);border:2px solid transparent;border-left:5px solid var(--lc);border-radius:9px;
+  padding:9px 11px;display:flex;align-items:baseline;gap:10px;text-align:left}
+.fixbtn .num{font-size:20px;font-weight:800;color:var(--lc)}
+.fixbtn b{font-size:14px}
+.fixbtn small{margin-left:auto;font-size:11px;color:var(--dim)}
+.fixbtn.on{border-color:var(--neon);border-left-color:var(--lc);background:var(--panel2)}
+.studying{font-size:12px;color:var(--dim);text-align:center;margin:0 0 10px}
+.studying b{color:#fff}
+
+/* ---- card ---- */
+.card{background:var(--card);color:var(--ink);border-radius:12px;padding:16px 16px 20px;min-height:300px;
+  border-top:6px solid var(--lc,var(--neon))}
+.qnum{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--soft);margin-bottom:10px;font-weight:700}
+.instr{font-size:13px;line-height:1.5;color:var(--soft);margin-bottom:11px}
+.qtext{font-size:19px;font-weight:700;line-height:1.42;margin:0 0 14px;white-space:pre-wrap}
+.qimg{display:block;width:100%;max-width:340px;margin:0 auto 14px;border-radius:8px}
+.opts{list-style:none;margin:0;padding:0}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:11px 8px;border-top:1px solid var(--cline);
+  font-size:16px;line-height:1.42;border-radius:7px;cursor:pointer}
+.opt .k{font-weight:800;color:var(--soft);min-width:18px}
+.opt.correct{background:#d5f0da}.opt.correct .k{color:#1f7a3c}
+.opt.wrong{background:#f8d9d5}.opt.wrong .k{color:#b3352a}
+.opt.dim{opacity:.55}
+.opts.locked .opt{cursor:default}
+.body{font-size:16px;line-height:1.55}
+.body p{margin:0 0 12px;white-space:pre-wrap}
+ol.items,ul.lines{margin:0;padding:0;list-style:none}
+ol.items li,ul.lines li{padding:8px 0;border-bottom:1px solid var(--cline)}
+ol.items li:last-child,ul.lines li:last-child{border-bottom:0}
+table.match{width:100%;border-collapse:collapse;font-size:14.5px;line-height:1.4}
+table.match th{background:#e9e5d8;text-align:left;font-size:12px;letter-spacing:.5px;padding:8px}
+table.match td{border:1px solid #d9d4c5;padding:8px;vertical-align:top}
+.answer{margin-top:16px;padding:13px 13px;background:#e6edf0;border-left:5px solid var(--lc,var(--neon));border-radius:7px}
+.answer .al{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--soft);font-weight:800;margin-bottom:6px}
+.answer .at{font-size:16.5px;line-height:1.5;white-space:pre-wrap;font-weight:600}
+.answer img{width:100%;border-radius:5px;display:block;margin-top:4px}
+.verdict{margin-top:14px;font-size:15px;font-weight:800}
+.verdict.ok{color:#1f7a3c}.verdict.no{color:#b3352a}
+.tap{margin-top:10px;font-size:12.5px;color:var(--soft)}
+.empty{text-align:center;color:var(--soft);font-size:16px;padding:56px 18px;line-height:1.6}
+
+/* ---- controls ---- */
+.big{display:block;width:100%;margin-top:12px;padding:15px;border:0;border-radius:10px;
+  background:var(--neon);color:var(--neonink);font-size:17px;font-weight:800}
+.sortrow{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.sortrow button{background:var(--panel);border:2px solid var(--line);border-radius:10px;padding:11px 6px;
+  font-size:15px;font-weight:800;line-height:1.25}
+.sortrow button small{display:block;font-size:11px;font-weight:400;color:var(--dim);margin-top:2px}
+.sortrow .s-live{color:var(--live)}.sortrow .s-known{color:var(--known)}
+.sortrow button.cur{border-color:currentColor;background:var(--panel2)}
+.navrow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:12px}
+.navrow button{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:11px 6px;font-size:14px;color:#dfe5ea}
+.navrow button:disabled{opacity:.35}
+.goto{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;color:var(--dim);flex-wrap:wrap}
+.goto input{width:76px;padding:9px 10px;border-radius:9px;border:1px solid var(--line);background:var(--panel);color:#eef1f4;font:inherit;font-size:15px;text-align:center}
+.goto button{padding:9px 16px;border-radius:9px;border:0;background:var(--neon);color:var(--neonink);font-size:14px;font-weight:800}
+#gotoMsg{flex-basis:100%;min-height:16px;font-size:12px;line-height:1.5}
+footer{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:16px;font-size:12px;color:var(--dim);flex-wrap:wrap}
+footer .acts{display:flex;gap:14px}
+footer .acts button{background:none;border:0;color:var(--dim);text-decoration:underline;padding:4px 0;font-size:12px}
+#restoreFile{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1><span class="badge">Θ</span><span>Institutions <em>Final</em></span></h1>
+    <div id="counter"></div>
+  </header>
+  <div class="levels" id="levels"></div>
+  <div class="studying" id="studying"></div>
+  <div class="card" id="card"></div>
+  <div id="controls"></div>
+  <div class="navrow">
+    <button id="prev">← Back</button>
+    <button id="shuffle">Shuffle</button>
+    <button id="next">Next →</button>
+  </div>
+  <div class="goto"><label for="gotoN">Go to question</label><input id="gotoN" type="number" inputmode="numeric" placeholder="no."><button id="gotoBtn" type="button">Go</button><span id="gotoMsg"></span></div>
+  <footer>
+    <span id="foot"></span>
+    <span class="acts">
+      <button id="backup">Backup</button>
+      <button id="restore">Restore</button>
+      <button id="resetAll">Reset all</button>
+    </span>
+    <input type="file" id="restoreFile" accept="application/json,.json">
+  </footer>
+</div>
+<script>
+var APP = {"id": "institutionsfinal", "key": "pegp-institutionsfinal-v1"};
+var TIERS = [{"id": "a", "name": "General check", "sub": "", "lvl": "l1", "ns": [1, 9, 12, 17, 21, 24, 41, 44, 47, 49, 50, 64, 65, 69], "fixed": false}, {"id": "b", "name": "Intensive", "sub": "", "lvl": "l2", "ns": [16, 39, 42, 58, 59, 60, 61, 63, 76], "fixed": false}, {"id": "c", "name": "Further", "sub": "", "lvl": "l3", "ns": [11, 15, 33, 43, 46, 54, 62], "fixed": false}, {"id": "d", "name": "Maximum", "sub": "extra active attention", "lvl": "l4", "ns": [5, 6, 37, 52], "fixed": false}];
+var ITEMS = [{"n": 1, "label": "Question 1", "k": "mcq", "opts": [["Α", "1 φορά"], ["Β", "3 φορές"], ["Γ", "5 φορές"], ["Δ", "καμία φορά"]], "c": "Γ", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και δίπλα τη σωστή απάντηση σημειώνοντας το αντίστοιχο γράμμα (Α ή Β ή Γ ή Δ).<\/div><div class=\"qtext\">Η ιδρυτική Συνθήκη της ΕΟΚ του 1957 (σημερινή Ε.Ε.) αναθεωρήθηκε έως σήμερα (2024) συνολικά:<\/div>"}, {"n": 5, "label": "Question 5", "k": "rev", "ans": "1-Β, 2-Γ, 3-Α, 4-Δ", "body": "<div class=\"instr\">Γράψτε τον αριθμό του θέματος στο τετράδιό σας και αντιστοιχίστε τις αρχές του Συντάγματος της Στήλης I με τα δικαιώματα των πολιτών στην Ελληνική Δημοκρατία που στηρίζονται σε κάθε μια από αυτές όπως δίνονται στη Στήλη II, γράφοντας στο τετράδιό σας τον αριθμό από τη Στήλη I και δίπλα το γράμμα από τη Στήλη II που ταιριάζει.<\/div><div class=\"body\"><table class=\"match\"><tr><th>ΣΤΗΛΗ Ι: ΑΡΧΗ<\/th><th>ΣΤΗΛΗ ΙΙ: ΔΙΚΑΙΩΜΑ<\/th><\/tr><tr><td>1. Αρχή της λαϊκής κυριαρχίας<\/td><td>Α. Οι νόμοι ψηφίζονται από τη Βουλή<\/td><\/tr><tr><td>2. Αρχή του κοινωνικού κράτους<\/td><td>Β. Είναι δικαίωμα των πολιτών να ψηφίζουν και να εκλέγουν τις αρχές του τόπου<\/td><\/tr><tr><td>3. Αρχή της διάκρισης των εξουσιών<\/td><td>Γ. Η εκπαίδευση στην Ελλάδα είναι δωρεάν<\/td><\/tr><tr><td>4. Αρχή του κράτους δικαίου<\/td><td>Δ. Για να φυλακιστεί κάποιος πρέπει να δώσει εντολή η δικαστική αρχή και μόνο<\/td><\/tr><\/table><\/div>"}, {"n": 6, "label": "Question 6", "k": "mcq", "opts": [["Α", "απλής αναλογικής"], ["Β", "ενισχυμένης αναλογικής"], ["Γ", "πλειοψηφικό"], ["Δ", "κανένα από τα παραπάνω"]], "c": "Α", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και δίπλα τη σωστή απάντηση σημειώνοντας το αντίστοιχο γράμμα (Α ή Β ή Γ ή Δ).<\/div><div class=\"qtext\">Οι εθνικές εκλογές του Μαΐου 2023 στην Ελλάδα έγιναν με σύστημα:<\/div>"}, {"n": 9, "label": "Question 9", "k": "mcq", "opts": [["Α", "Η κυβέρνηση οφείλει να λάβει ψήφο εμπιστοσύνης από τη Βουλή, ενώ παράλληλα η Βουλή έχει δικαίωμα να άρει την εμπιστοσύνη της ανά πάσα στιγμή με ψήφο δυσπιστίας"], ["Β", "Μέσα σε 20 ημέρες από την ορκωμοσία του Πρωθυπουργού, η Κυβέρνηση υποχρεούται να ζητήσει ψήφο εμπιστοσύνης και μπορεί να τη ζητά και οποτεδήποτε άλλοτε"], ["Γ", "H Βουλή δεν μπορεί να αποσύρει την εμπιστοσύνη της από μεμονωμένο μέλος της Κυβέρνησης"], ["Δ", "Κατά την ψηφοφορία για την ψήφο εμπιστοσύνης/ δυσπιστίας δεν μπορούν να ψηφίσουν οι Υπουργοί και Υφυπουργοί που είναι μέλη της Βουλής"]], "c": "Α", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και δίπλα τη σωστή απάντηση σημειώνοντας το αντίστοιχο γράμμα (Α ή Β ή Γ ή Δ).<\/div><div class=\"qtext\">Σύμφωνα με την «αρχή της δεδηλωμένης», η οποία κατοχυρώνεται στο άρθρο 84 του Συντάγματος:<\/div>"}, {"n": 11, "label": "Question 11", "k": "mcq", "opts": [["Α", "την περίθαλψη των απόρων"], ["Β", "την επαγγελματική ένταξη των ατόμων με αναπηρίες"], ["Γ", "την επίλυση των κληρονομικών διαφορών που προκύπτουν μεταξύ των πολιτών"], ["Δ", "την προστασία του θεσμού της οικογένειας"]], "c": "Γ", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και δίπλα τη σωστή απάντηση σημειώνοντας το αντίστοιχο γράμμα (Α ή Β ή Γ ή Δ).<\/div><div class=\"qtext\">Ποια από τις παρακάτω διατυπώσεις είναι λάθος; Το κράτος, όπως ρητά αναφέρεται στο Σύνταγμα, οφείλει να μεριμνά για:<\/div>"}, {"n": 12, "label": "Question 12", "k": "mcq", "opts": [["Α", "1957"], ["Β", "2007"], ["Γ", "1993"], ["Δ", "1985"]], "c": "Β", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και δίπλα τη σωστή απάντηση σημειώνοντας το αντίστοιχο γράμμα (Α ή Β ή Γ ή Δ).<\/div><div class=\"qtext\">Ο Οργανισμός Θεμελιωδών Δικαιωμάτων της Ε.Ε για την προάσπιση των θεμελιωδών δικαιωμάτων και ελευθεριών του ανθρώπου ιδρύθηκε το:<\/div>"}, {"n": 15, "label": "Question 15", "k": "mcq", "opts": [["Α", "Αν είστε Έλληνας πολίτης, αλλά ζείτε στην Ισπανία, έχετε το δικαίωμα του εκλέγειν και εκλέγεσθαι στις δημοτικές εκλογές στη συγκεκριμένη χώρα."], ["Β", "Αν κάποιος τελέσει πολιτικό γάμο στην Ελλάδα, δεν είναι απαραίτητο ότι ο γάμος αυτός θα έχει ισχύ σε άλλο κράτος της ΕΕ."], ["Γ", "Τα περιουσιακά δικαιώματα και το δικαίωμα διατροφής ενδέχεται να αλλάζουν από χώρα σε χώρα εντός της ΕΕ για τα ζευγάρια (ετερόφυλα και ομόφυλα) που έχουν συνάψει σύμφωνο συμβίωσης."], ["Δ", "Ένας Έλληνας πολίτης, αν έχει ζήσει νόμιμα και πληροί τους όρους διαμονής σε άλλη χώρα της ΕΕ επί 5 συναπτά (συνεχόμενα) έτη, αποκτά αυτομάτως το δικαίωμα μόνιμης διαμονής στη χώρα αυτή."]], "c": "Β", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και δίπλα τη σωστή απάντηση σημειώνοντας το αντίστοιχο γράμμα (Α ή Β ή Γ ή Δ).<\/div><div class=\"qtext\">Ποια από τις παρακάτω διατυπώσεις είναι λάθος;<\/div>"}, {"n": 16, "label": "Question 16", "k": "mcq", "opts": [["Α", "Εταιρεία Ύδρευσης Αποχέτευσης Θεσσαλονίκης (Ε.Υ.Α.Θ.)"], ["Β", "Ελληνική Βιομηχανία Αλουμινίου"], ["Γ", "Δημοτική Επιχείρηση Ανάπτυξης Δήμου Ζωγράφου"], ["Δ", "Ελληνικά Ταχυδρομεία Α.Ε. (ΕΛΤΑ)"]], "c": "Β", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και δίπλα τη σωστή απάντηση σημειώνοντας το αντίστοιχο γράμμα (Α ή Β ή Γ ή Δ).<\/div><div class=\"qtext\">Ποια από τις παρακάτω επιχειρήσεις δεν ανήκει στις Επιχειρήσεις Κοινής Ωφέλειας;<\/div>"}, {"n": 17, "label": "Question 17", "k": "mcq", "opts": [["Α", "Όταν ο Πρωθυπουργός απευθύνεται εκτάκτως και για σοβαρά θέματα από την τηλεόραση και το ραδιόφωνο στους πολίτες"], ["Β", "Όταν ο Πρωθυπουργός απαντά στη Βουλή σε επίκαιρη ερώτηση που έχει γίνει στον ίδιον"], ["Γ", "Όταν ο Πρωθυπουργός κάνει δηλώσεις μετά από επίσημη επίσκεψη στη χώρα μας ξένου αρχηγού κράτους ή κυβέρνησης"], ["Δ", "Όταν ο Πρωθυπουργός κάνει ομιλία στην κοινοβουλευτική ομάδα του κόμματός του"]], "c": "Β", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και δίπλα τη σωστή απάντηση σημειώνοντας το αντίστοιχο γράμμα (Α ή Β ή Γ ή Δ).<\/div><div class=\"qtext\">Ποια διαδικασία ονομάζεται και «Ώρα του Πρωθυπουργού»;<\/div>"}, {"n": 21, "label": "Question 21", "k": "mcq", "opts": [["Α", "μια δωρεάν κάρτα που προσφέρει πρόσβαση σε ιατρική φροντίδα ενός πολίτη της ΕΕ σε οποιοδήποτε κράτος και αν βρίσκεται"], ["Β", "μια δωρεάν κάρτα που προσφέρει πρόσβαση σε ιατρική φροντίδα κατά την προσωρινή διαμονή ενός ασφαλισμένου σε ένα κράτος-μέλος της ΕΕ"], ["Γ", "μια προπληρωμένη κάρτα που προσφέρει πρόσβαση σε ιατρική φροντίδα κατά την προσωρινή διαμονή ενός ασφαλισμένου σε ένα κράτος-μέλος της ΕΕ"], ["Δ", "κανένα από τα παραπάνω"]], "c": "Β", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και δίπλα τη σωστή απάντηση σημειώνοντας το αντίστοιχο γράμμα (Α ή Β ή Γ ή Δ).<\/div><div class=\"qtext\">Τι είναι η Ευρωπαϊκή Κάρτα Ασφάλισης Ασθενείας (ΕΚΑΑ);<\/div>"}, {"n": 24, "label": "Question 24", "k": "rev", "ans": "Α και Δ", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και δίπλα τις σωστές απαντήσεις σημειώνοντας το αντίστοιχο γράμμα (Α ή Β ή Γ ή Δ).<\/div><div class=\"qtext\">Ποιες από τις παρακάτω δηλώσεις σχετικά με τη στράτευση στην Ελλάδα είναι σωστές:<\/div><div class=\"body\"><ol class=\"items\"><li>Α. Κάθε Έλληνας που μπορεί να φέρει όπλα είναι υποχρεωμένος να συντελεί στην άμυνα της Πατρίδας, σύμφωνα με τους ορισμούς των νόμων<\/li><li>B. Η στρατιωτική θητεία στην Ελλάδα είναι υποχρεωτική και για τους άνδρες και για τις γυναίκες.<\/li><li>Γ. Η διάρκεια της στρατιωτικής θητείας στην Ελλάδα είναι υποχρεωτικά 24 μήνες.<\/li><li>Δ. Υπάρχει δυνατότητα εξαγοράς υπολοίπου της στρατιωτικής θητείας για όποιον το επιθυμεί.<\/li><\/ol><\/div>"}, {"n": 33, "label": "Question 33", "k": "mcq", "opts": [["Α", "στις 9/8/1949"], ["Β", "στις 9/8/1959"], ["Γ", "στις 9/8/1969"], ["Δ", "κανένα από τα παραπάνω"]], "c": "Α", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και δίπλα τη σωστή απάντηση σημειώνοντας το αντίστοιχο γράμμα (Α ή Β ή Γ ή Δ).<\/div><div class=\"qtext\">Η Ελλάδα έγινε μέλος του Συμβουλίου της Ευρώπης:<\/div>"}, {"n": 37, "label": "Question 37", "k": "mcq", "opts": [["Α", "αναφορές πολιτών της Ε.Ε. κατά των κυβερνήσεων των κρατών-μελών"], ["Β", "αναφορές κακοδιοίκησης στο πλαίσιο των θεσμικών οργάνων της Ε.Ε."], ["Γ", "αναφορές για σωστή διαχείριση των δαπανών της Ε.Ε."], ["Δ", "όλα τα παραπάνω"]], "c": "Β", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και δίπλα τη σωστή απάντηση σημειώνοντας το αντίστοιχο γράμμα (Α ή Β ή Γ ή Δ).<\/div><div class=\"qtext\">Ο Ευρωπαίος Διαμεσολαβητής διερευνά:<\/div>"}, {"n": 39, "label": "Question 39", "k": "rev", "ans": "(1) τη Βουλή\n(2) τον Πρόεδρο της Δημοκρατίας\n(3) τον Πρόεδρο της Δημοκρατίας\n(4) την Κυβέρνηση", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και τον αριθμό που αντιστοιχεί σε κάθε κενό, σημειώνοντας δίπλα τη λέξη ή τη φράση που ταιριάζει, επιλέγοντας από τις παρακάτω: τον Πρόεδρο της Δημοκρατίας, την Κυβέρνηση, τον Πρόεδρο της Δημοκρατίας, τη Βουλή<\/div><div class=\"body\"><p>Στην Ελλάδα, η νομοθετική λειτουργία ασκείται από (1) ________________ και (2) ________________. H εκτελεστική λειτουργία ασκείται από (3) _______________ και (4) ______________.<\/p><\/div>"}, {"n": 41, "label": "Question 41", "k": "mcq", "opts": [["Α", "Να παρέχει δικαστική συνδρομή στους πολίτες"], ["Β", "Να εκπροσωπεί τους Έλληνες πολίτες στο Ευρωπαϊκό δικαστήριο"], ["Γ", "Να διαμεσολαβεί μεταξύ των πολιτών και της διοίκησης σε περίπτωση διάκρισης εις βάρος τους ή κακοδιοίκησης"], ["Δ", "Κανένα από τα παραπάνω"]], "c": "Γ", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και δίπλα τη σωστή απάντηση σημειώνοντας το αντίστοιχο γράμμα (Α ή Β ή Γ ή Δ).<\/div><div class=\"qtext\">Ο σκοπός του Συνηγόρου του Πολίτη είναι:<\/div>"}, {"n": 42, "label": "Question 42", "k": "rev", "ans": "(1) το Σύνταγμα\n(2) οι ιδρυτικές συνθήκες της Ευρωπαϊκής Ένωσης\n(3) ο νόμος\n(4) το Προεδρικό Διάταγμα", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και τον αριθμό που αντιστοιχεί σε κάθε κενό, σημειώνοντας δίπλα τη λέξη ή τη φράση που ταιριάζει, επιλέγοντας από τις παρακάτω: το Προεδρικό Διάταγμα, ο νόμος, το Σύνταγμα, οι ιδρυτικές συνθήκες της Ευρωπαϊκής Ένωσης<\/div><div class=\"body\"><p>Στην Ελλάδα, (1) __________ υπερισχύει έναντι όλων των εθνικών νομικών πράξεων. Στο ίδιο τυπικό επίπεδο με αυτό ωστόσο κατατάσσεται/ονται και (2) __________ της Ευρωπαϊκής Ένωσης. Ακολουθούν οι διεθνείς νομικές πράξεις που έχουν αναγνωριστεί από το ελληνικό κράτος, (3) __________, (4) __________ και οι διοικητικές πράξεις.<\/p><\/div>"}, {"n": 43, "label": "Question 43", "k": "rev", "ans": "(1) ερωτήσεις\n(2) επίκαιρες επερωτήσεις\n(3) επερωτήσεις\n(4) πρόταση δυσπιστίας", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και τον αριθμό που αντιστοιχεί σε κάθε κενό, σημειώνοντας δίπλα τη λέξη ή τη φράση που ταιριάζει, επιλέγοντας από τις παρακάτω: επίκαιρες επερωτήσεις, επερωτήσεις, πρόταση δυσπιστίας, ερωτήσεις<\/div><div class=\"body\"><p>Α. Ο κοινοβουλευτικός έλεγχος στην Ελλάδα ασκείται κυρίως αλλά όχι αποκλειστικά με (1) __________, (2) __________ και με (3) __________.\n\nΒ. H Boυλή μπορεί με απόφασή της να αποσύρει την εμπιστοσύνη της από την Kυβέρνηση ή από μέλoς της ύστερα από (4) __________.<\/p><\/div>"}, {"n": 44, "label": "Question 44", "k": "rev", "ans": "(1) έκπτωση\n(2) δήλωση αποποίησης\n(3) τη συγγένεια\n(4) τη γέννηση σε ελληνικό έδαφος υπό προϋποθέσεις", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και τον αριθμό που αντιστοιχεί σε κάθε κενό, σημειώνοντας δίπλα τη λέξη ή τη φράση που ταιριάζει, επιλέγοντας από τις παρακάτω: έκπτωση, δήλωση αποποίησης, τη γέννηση σε ελληνικό έδαφος υπό προϋποθέσεις, τη συγγένεια.<\/div><div class=\"body\"><p>Η απώλεια της Ελληνικής ιθαγένειας γίνεται, κυρίως, στις εξής περιπτώσεις: με (1) __________ και (2) __________. Αντίθετα, την Ελληνική ιθαγένεια μπορεί να αποκτήσει κάποιος από γέννηση, με βάση (3) __________ εξ αίματος και (4) __________.<\/p><\/div>"}, {"n": 46, "label": "Question 46", "k": "rev", "ans": "(1) Ο Συνήγορος του Καταναλωτή\n(2) Η Επιτροπή Ανταγωνισμού\n(3) Η Ρυθμιστική Αρχή Ενέργειας\n(4) Η Γενική Διεύθυνση Προστασίας Καταναλωτή", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και τον αριθμό που αντιστοιχεί σε κάθε κενό, σημειώνοντας δίπλα τη λέξη ή τη φράση που ταιριάζει, επιλέγοντας από τις παρακάτω: Η Γενική Διεύθυνση Προστασίας Καταναλωτή, Η Επιτροπή Ανταγωνισμού, Η Ρυθμιστική Αρχή Ενέργειας, Ο Συνήγορος του Καταναλωτή<\/div><div class=\"body\"><p>(1) _______________ αναλαμβάνει δωρεάν διαμεσολάβηση για τη φιλική διευθέτηση διαφορών των καταναλωτών ή των ενώσεών τους με προμηθευτές του δημόσιου ή του ιδιωτικού τομέα.\n\n(2) _______________ έχει την ευθύνη για την καταπολέμηση των πρακτικών που περιορίζουν ή νοθεύουν τον ανταγωνισμό και καταλήγουν σε βλάβη των καταναλωτών.\n\n(3) _______________ εποπτεύει τον βαθμό και την αποτελεσματικότητα του ανταγωνισμού στην εγχώρια αγορά ενέργειας και τις τιμές για τους οικιακούς καταναλωτές.\n\n(4) _______________ του Υπουργείου Ανάπτυξης έχει την ευθύνη για την προστασία των οφειλετών από αθέμιτες πρακτικές είσπραξης των απαιτήσεων.<\/p><\/div>"}, {"n": 47, "label": "Question 47", "k": "rev", "ans": "(1) ορισμένου χρόνου\n(2) αορίστου χρόνου\n(3) πλήρους απασχόλησης\n(4) μερικής απασχόλησης", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και τον αριθμό που αντιστοιχεί σε κάθε κενό, σημειώνοντας δίπλα τη λέξη ή τη φράση που ταιριάζει, επιλέγοντας από τις παρακάτω: πλήρους απασχόλησης, αορίστου χρόνου, ορισμένου χρόνου, μερικής απασχόλησης<\/div><div class=\"body\"><p>Αν μεταξύ εργαζομένου και εργοδότη συμφωνήθηκε ρητώς ή σιωπηρώς η συγκεκριμένη διάρκεια του χρόνου εργασίας ή αν κάτι τέτοιο προκύπτει από το είδος και τη φύση της εργασίας, τότε πρόκειται για Σύμβαση εργασίας (1) ____________________ .\n\nΣύμβαση εργασίας (2) ____________________ υπάρχει, όταν η χρονική διάρκειά της δεν καθορίζεται και δεν συνάγεται από το είδος και τον σκοπό της σύμβασης. Μπορεί δε να λήξει μόνο με καταγγελία από τον εργοδότη.\n\nΑν ένας εργαζόμενος δουλεύει με πλήρες ωράριο και για όλες τις εργάσιμες ημέρες της εβδομάδας, σύμφωνα με τη σχετική Συλλογική Σύμβαση Εργασίας, τότε η σύμβασή του θεωρείται (3) _________________.\n\nΜε τη Σύμβαση (4) _______________ καθορίζεται διάρκεια ημερήσιας ή εβδομαδιαίας ή δεκαπενθήμερης ή μηνιαίας εργασίας μικρότερη από την κανονική.<\/p><\/div>"}, {"n": 49, "label": "Question 49", "k": "rev", "ans": "1-Λ, 2-Λ, 3-Σ, 4-Σ", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και τον αριθμό της κάθε πρότασης σημειώνοντας Σ, αν η πρόταση που σας δίνεται παρακάτω είναι σωστή, ή Λ, αν είναι λάθος.<\/div><div class=\"qtext\">Με βάση το Σύνταγμα της χώρας μας:<\/div><div class=\"body\"><ol class=\"items\"><li>1. Οι θρησκευτικές πεποιθήσεις κάποιου ενδέχεται να επηρεάσουν μέρος των ατομικών και πολιτικών δικαιωμάτων του<\/li><li>2. Για να είναι έγκυρος ένας γάμος μεταξύ ενηλίκων, πρέπει να έχουν συναινέσει οι γονείς/ κηδεμόνες τους.<\/li><li>3. Ο αθλητισμός τελεί υπό την προστασία και την ανώτατη εποπτεία του Κράτους.<\/li><li>4. H κατοικία κάθε πολίτη είναι άσυλο.<\/li><\/ol><\/div>"}, {"n": 50, "label": "Question 50", "k": "rev", "ans": "1-Σ, 2-Σ, 3-Λ, 4-Λ", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και τον αριθμό της κάθε πρότασης σημειώνοντας Σ, αν η πρόταση που σας δίνεται παρακάτω είναι σωστή, ή Λ, αν είναι λάθος.<\/div><div class=\"qtext\">Σε ποιες περιπτώσεις μπορεί κάποιος να αρνηθεί να πληρώσει διοικητικό πρόστιμο;<\/div><div class=\"body\"><ol class=\"items\"><li>1. Αν του επιβλήθηκε προφορικά από όργανο της δημόσιας τάξης (π.χ. δημοτική αστυνομία)<\/li><li>2. Αν έλαβε έγγραφη βεβαίωση προστίμου με ανεπαρκή αιτιολογία.<\/li><li>3. Αν δεν γνώριζε τον παράνομο χαρακτήρα της πράξης του.<\/li><li>4. Αν είχε λάβει διαβεβαίωση από αρμόδιο υπάλληλο ότι δεν απαιτείται να πληρώσει.<\/li><\/ol><\/div>"}, {"n": 52, "label": "Question 52", "k": "mcq", "opts": [["Α", "2023"], ["Β", "1985"], ["Γ", "2004."], ["Δ", "1957"]], "c": "Β", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και τον αριθμό της κάθε πρότασης σημειώνοντας Σ, αν η πρόταση που σας δίνεται παρακάτω είναι σωστή, ή Λ, αν είναι λάθος.<\/div><div class=\"qtext\">Η Συνθήκη Σένγκεν με την οποία θεσπίζεται μια Ευρώπη χωρίς εσωτερικά σύνορα («περιοχή Σένγκεν») δημιουργήθηκε από πέντε κράτη μέλη της Ε.Ε το έτος:<\/div>"}, {"n": 54, "label": "Question 54", "k": "rev", "ans": "1-Σ, 2-Λ, 3-Σ, 4-Σ", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και τον αριθμό της κάθε πρότασης σημειώνοντας Σ, αν η πρόταση που σας δίνεται παρακάτω είναι σωστή, ή Λ, αν είναι λάθος.<\/div><div class=\"qtext\">Στην Ελλάδα η ελευθερία της Τέχνης προστατεύεται από το Σύνταγμα. Παρ' όλα αυτά σε ποιες περιπτώσεις θα μπορούσαν να επιβληθούν περιορισμοί στην καλλιτεχνική δημιουργία;<\/div><div class=\"body\"><ol class=\"items\"><li>1. Απαγόρευση εισόδου ανηλίκων σε κινηματογραφική αίθουσα, αν το έργο που προβάλλεται κρίνεται ως ακατάλληλο<\/li><li>2. Απαγόρευση κυκλοφορίας βιβλίου μυθοπλασίας, επειδή θεωρήθηκε από μερίδα πολιτών ότι προσβάλλει το θρησκευτικό τους αίσθημα<\/li><li>3. Απαγόρευση αυτοσχέδιας παράστασης σε κοινόχρηστο χώρο χωρίς να έχει ζητηθεί άδεια<\/li><li>4. Απαγόρευση δημιουργίας graffiti στους τοίχους ενός ξένου σπιτιού, χωρίς τη συναίνεση του ιδιοκτήτη<\/li><\/ol><\/div>"}, {"n": 58, "label": "Question 58", "k": "rev", "ans": "1-Λ, 2-Λ, 3-Σ, 4-Σ", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και τον αριθμό της κάθε πρότασης σημειώνοντας Σ, αν η πρόταση που σας δίνεται παρακάτω είναι σωστή, ή Λ, αν είναι λάθος.<\/div><div class=\"body\"><ol class=\"items\"><li>1. Οι πολίτες των κρατών που ανήκουν στην Ευρωπαϊκή Ένωση δεν μπορούν να κατοικούν χωρίς περιορισμό σε άλλο κράτος της Ένωσης<\/li><li>2. Η Ευρωπαϊκή Ένωση είναι ένα ομοσπονδιακό κράτος<\/li><li>3. Οι πολίτες της Ευρωπαϊκής Ένωσης εκπροσωπούνται από το Ευρωπαϊκό Κοινοβούλιο<\/li><li>4. Τα συμφέροντα της Ευρωπαϊκής Ένωσης εκπροσωπούνται από την Ευρωπαϊκή Επιτροπή<\/li><\/ol><\/div>"}, {"n": 59, "label": "Question 59", "k": "rev", "ans": "1-Λ, 2-Σ, 3-Λ, 4-Λ", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και τον αριθμό της κάθε πρότασης σημειώνοντας Σ, αν η πρόταση που σας δίνεται παρακάτω είναι σωστή, ή Λ, αν είναι λάθος.<\/div><div class=\"qtext\">Ο Πρόεδρος της Βουλής των Ελλήνων:<\/div><div class=\"body\"><ol class=\"items\"><li>1. εκλέγεται από τον λαό<\/li><li>2. εκπροσωπεί τη Βουλή σε διεθνείς και διμερείς κοινοβουλευτικές επιτροπές (forα)<\/li><li>3. αναπληρώνει τον/την Πρόεδρο της Δημοκρατίας για απουσία στο εξωτερικό πάνω από 3 ημέρες<\/li><li>4. είναι το δεύτερο πολιτειακό αξίωμα μετά τον/την Πρόεδρο της Δημοκρατίας<\/li><\/ol><\/div>"}, {"n": 60, "label": "Question 60", "k": "rev", "ans": "1-Α, 2-Γ, 3-Β, 4-Δ", "body": "<div class=\"instr\">Γράψτε τον αριθμό του θέματος στο τετράδιό σας και αντιστοιχίστε τα είδη των δικαστηρίων της Στήλης I με τα δικαστήρια που δίνονται στη Στήλη II, γράφοντας στο τετράδιό σας τον αριθμό από τη Στήλη I και δίπλα το γράμμα από τη Στήλη II που ταιριάζει.<\/div><div class=\"body\"><table class=\"match\"><tr><th>Στήλη Ι: ΕΙΔΟΣ ΔΙΚΑΣΤΗΡΙΟΥ<\/th><th>Στήλη ΙΙ: ΔΙΚΑΣΤΗΡΙΟ<\/th><\/tr><tr><td>1. Ποινικό<\/td><td>Α. Μικτό Ορκωτό Δικαστήριο<\/td><\/tr><tr><td>2. Διοικητικό<\/td><td>Β. Ειρηνοδικείο<\/td><\/tr><tr><td>3. Πολιτικό<\/td><td>Γ. Συμβούλιο της Επικρατείας (ΣτΕ)<\/td><\/tr><tr><td>4. Ειδικό<\/td><td>Δ. Αεροδικείο<\/td><\/tr><\/table><\/div>"}, {"n": 61, "label": "Question 61", "k": "rev", "ans": "1-Β, 2-Γ, 3-Α, 4-Δ", "body": "<div class=\"instr\">Γράψτε τον αριθμό του θέματος στο τετράδιό σας και αντιστοιχίστε τον τύπο εκπαιδευτηρίου της Στήλης I με τις βαθμίδες εκπαίδευσης που δίνονται στη Στήλη II, γράφοντας στο τετράδιό σας τον αριθμό από τη Στήλη I και δίπλα το γράμμα από τη Στήλη II που ταιριάζει.<\/div><div class=\"body\"><table class=\"match\"><tr><th>Στήλη Ι: ΤΥΠΟΣ ΕΚΠΑΙΔΕΥΤΗΡΙΟΥ<\/th><th>Στήλη ΙΙ: ΒΑΘΜΙΔΑ ΕΚΠΑΙΔΕΥΣΗΣ<\/th><\/tr><tr><td>1. Πανεπιστήμιο<\/td><td>Α. Πρωτοβάθμια Εκπαίδευση<\/td><\/tr><tr><td>2. Ινστιτούτο Επαγγελματικής Κατάρτισης (ΙΕΚ)<\/td><td>Β. Ανώτατη/ Τριτοβάθμια Εκπαίδευση<\/td><\/tr><tr><td>3. Δημοτικό<\/td><td>Γ. Μεταλυκειακή Εκπαίδευση<\/td><\/tr><tr><td>4. Επαγγελματικό Λύκειο (ΕΠΑΛ)<\/td><td>Δ. Δευτεροβάθμια Εκπαίδευση<\/td><\/tr><\/table><\/div>"}, {"n": 62, "label": "Question 62", "k": "rev", "ans": "1-Α, 2-Δ, 3-Γ, 4-Β", "body": "<div class=\"instr\">Γράψτε τον αριθμό του θέματος στο τετράδιό σας και αντιστοιχίστε τις ηλεκτρονικές υπηρεσίες της Στήλης I με τις αρμοδιότητες που δίνονται στη Στήλη II, γράφοντας στο τετράδιό σας τον αριθμό από τη Στήλη I και δίπλα το γράμμα από τη Στήλη II που ταιριάζει.<\/div><div class=\"body\"><table class=\"match\"><tr><th>ΣΤΗΛΗ Ι: ΗΛΕΚΤΡΟΝΙΚΗ ΥΠΗΡΕΣΙΑ<\/th><th>ΣΤΗΛΗ ΙΙ: ΑΡΜΟΔΙΟΤΗΤΑ<\/th><\/tr><tr><td>1. TaxisNet<\/td><td>Α. Έκδοση βεβαίωσης φορολογικής ενημερότητας<\/td><\/tr><tr><td>2. e- ΕΦΚΑ<\/td><td>Β. Εύρεση απόφασης υφυπουργού της Κυβέρνησης<\/td><\/tr><tr><td>3. myKEPlive<\/td><td>Γ. Ανανέωση δελτίου ανεργίας<\/td><\/tr><tr><td>4. www.diavgeia.gov.gr<\/td><td>Δ. Υποβολή αίτησης για απονομή σύνταξης γήρατος<\/td><\/tr><\/table><\/div>"}, {"n": 63, "label": "Question 63", "k": "rev", "ans": "1-Α, 2-Δ, 3-Β, 4-Γ", "body": "<div class=\"instr\">Γράψτε τον αριθμό του θέματος στο τετράδιό σας και αντιστοιχίστε τους θεσμούς και τα πολιτικά κόμματα της Στήλης I με τις οδούς/ονόματα κτισμάτων που δίνονται στη Στήλη II, γράφοντας στο τετράδιό σας τον αριθμό από τη Στήλη I και δίπλα το γράμμα από τη Στήλη II που ταιριάζει.<\/div><div class=\"body\"><table class=\"match\"><tr><th>ΣΤΗΛΗ Ι: ΘΕΣΜΟΣ/ΠΟΛΙΤΙΚΟ ΚΟΜΜΑ<\/th><th>ΣΤΗΛΗ ΙΙ: ΟΔΟΣ/ΚΤΙΣΜΑ<\/th><\/tr><tr><td>1. Πρωθυπουργός<\/td><td>Α. «Το Μέγαρο Μαξίμου»<\/td><\/tr><tr><td>2. ΠΑΣΟΚ-Κίνημα Αλλαγής<\/td><td>Β. «Η Κουμουνδούρου»<\/td><\/tr><tr><td>3. ΣΥΡΙΖΑ<\/td><td>Γ. «Η Πειραιώς»<\/td><\/tr><tr><td>4. ΝΔ<\/td><td>Δ. «Η Χαριλάου Τρικούπη»<\/td><\/tr><\/table><\/div>"}, {"n": 64, "label": "Question 64", "k": "rev", "ans": "1-Γ, 2-Δ, 3-Β, 4-Α", "body": "<div class=\"instr\">Γράψτε τον αριθμό του θέματος στο τετράδιό σας και αντιστοιχίστε τους πολιτικούς της Στήλης I με τα ιστορικά γεγονότα με τα οποία συνδέονται που δίνονται στη Στήλη II, γράφοντας στο τετράδιό σας τον αριθμό από τη Στήλη I και δίπλα το γράμμα από τη Στήλη II που ταιριάζει.<\/div><div class=\"body\"><table class=\"match\"><tr><th>ΣΤΗΛΗ Ι: ΠΟΛΙΤΙΚΟ ΠΡΟΣΩΠΟ<\/th><th>ΣΤΗΛΗ ΙΙ: ΙΣΤΟΡΙΚΟ ΓΕΓΟΝΟΣ<\/th><\/tr><tr><td>1. Γεώργιος Ράλλης<\/td><td>Α. Μεταρρυθμίσεις στο οικογενειακό δίκαιο, την εκπαίδευση και τη δημόσια διοίκηση, ίδρυση του Εθνικού Συστήματος Υγείας<\/td><\/tr><tr><td>2. Κωνσταντίνος Καραμανλής<\/td><td>Β. Ένταξη της Ελλάδας στην Οικονομική και Νομισματική Ένωση (ΟΝΕ)<\/td><\/tr><tr><td>3. Κωνσταντίνος Σημίτης<\/td><td>Γ. Επικύρωση της ένταξης της χώρας στην Ευρωπαϊκή Οικονομική Κοινότητα (ΕΟΚ)<\/td><\/tr><tr><td>4. Ανδρέας Παπανδρέου<\/td><td>Δ. Αποκατάσταση της δημοκρατίας, αίτημα ένταξης στην Ευρωπαϊκή Οικονομική Κοινότητα (ΕΟΚ)<\/td><\/tr><\/table><\/div>"}, {"n": 65, "label": "Question 65", "k": "rev", "ans": "1-Β, 2-Γ, 3-Α, 4-Δ", "body": "<div class=\"instr\">Γράψτε τον αριθμό του θέματος στο τετράδιό σας και αντιστοιχίστε τους φορείς της Στήλης I με τις αρμοδιότητες που δίνονται στη Στήλη II, γράφοντας στο τετράδιό σας τον αριθμό από τη Στήλη I και δίπλα το γράμμα από τη Στήλη II που ταιριάζει.<\/div><div class=\"body\"><table class=\"match\"><tr><th>ΣΤΗΛΗ Ι: ΦΟΡΕΑΣ<\/th><th>ΣΤΗΛΗ Ι: ΑΡΜΟΔΙΟΤΗΤΑ<\/th><\/tr><tr><td>1. Δημόσια Οικονομική Υπηρεσία (Δ.Ο.Υ.)<\/td><td>Α. Ελέγχει και εποπτεύει Νοσοκομεία, Κέντρα Υγείας ή Μονάδες Κοινωνικής Φροντίδας στα καθορισμένα όρια μιας περιφέρειας<\/td><\/tr><tr><td>2. Δημόσια Υπηρεσία Απασχόλησης (Δ.ΥΠ.Α)<\/td><td>Β. Εκεί γίνεται η κατάθεση πινακίδων ενός οχήματος<\/td><\/tr><tr><td>3. Υγειονομική Περιφέρεια (ΥΠ.Ε)<\/td><td>Γ. Δίνει επιδόματα ανεργίας σε εκείνους που τα δικαιούνται<\/td><\/tr><tr><td>4. Κέντρο Πιστοποίησης Αναπηρίας (ΚΕ.Π.Α.)<\/td><td>Δ. Χαρακτηρίζει εκείνους που κάνουν τη σχετική αίτηση ως Άτομα με Αναπηρία<\/td><\/tr><\/table><\/div>"}, {"n": 69, "label": "Question 69", "k": "mcq", "opts": [["Α", "Ο εκλογέας που εκδηλώνει ενδιαφέρον να ψηφίσει στον τόπο διαμονής του, τους συνδυασμούς της εκλογικής περιφέρειας, στης οποίας τους εκλογικούς καταλόγους είναι εγγεγραμμένος."], ["Β", "Ο εκλογέας που ψηφίζει υποχρεωτικά στον δήμο όπου κατοικεί μόνιμα."], ["Γ", "Ο εκλογέας που έχει αλλάξει μόνιμη κατοικία και διαγράφεται αυτόματα από τους εκλογικούς καταλόγους του δήμου του."], ["Δ", "Ο εκλογέας που μπορεί να ψηφίζει σε οποιονδήποτε δήμο της χώρας ανεξάρτητα από τους εκλογικούς καταλόγους."]], "c": "Α", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και δίπλα τη σωστή απάντηση σημειώνοντας το αντίστοιχο γράμμα (Α ή Β ή Γ ή Δ).<\/div><div class=\"qtext\">Ποιος χαρακτηρίζεται ως ετεροδημότης;<\/div>"}, {"n": 76, "label": "Question 76", "k": "mcq", "opts": [["Α", "προβλέπεται από ειδικό νόμο του κράτους"], ["Β", "κατοχυρώνεται στο Σύνταγμα, στο άρθρο 102"], ["Γ", "καθορίζεται αποκλειστικά από τους δήμους"], ["Δ", "αναφέρεται στον Δημοσιοϋπαλληλικό Κώδικα"]], "c": "Β", "body": "<div class=\"instr\">Γράψτε στο τετράδιό σας τον αριθμό του θέματος και δίπλα τη σωστή απάντηση σημειώνοντας το αντίστοιχο γράμμα (Α ή Β ή Γ ή Δ).<\/div><div class=\"qtext\">Ο θεσμός της τοπικής αυτοδιοίκησης:<\/div>"}];
+</script>
+<script>
+(function(){
+var KEY = APP.key;
+var BY = {}; ITEMS.forEach(function(it){ BY[it.n] = it; });
+var FILING = TIERS.filter(function(t){ return !t.fixed; });
+var TIER_OF = {}; FILING.forEach(function(t){ t.ns.forEach(function(n){ TIER_OF[n] = t.id; }); });
+var TB = {}; TIERS.forEach(function(t){ TB[t.id] = t; });
+
+var S = {st:{}, ord:{}, sel:null, at:{}};
+var cur = null, revealed = false, picked = null;
+var $ = function(id){ return document.getElementById(id); };
+
+function load(){
+  try{ var raw = localStorage.getItem(KEY); if(raw){ var d = JSON.parse(raw); if(d && typeof d === 'object') S = d; } }catch(e){}
+  if(!S.st) S.st = {}; if(!S.ord) S.ord = {}; if(!S.at) S.at = {};
+  FILING.forEach(function(t){ t.ns.forEach(function(n){ if(S.st[n] !== 'live' && S.st[n] !== 'known') S.st[n] = 'live'; }); });
+  TIERS.forEach(function(t){
+    var o = S.ord[t.id];
+    var ok = Array.isArray(o) && o.length === t.ns.length && t.ns.every(function(n){ return o.indexOf(n) > -1; });
+    if(!ok) S.ord[t.id] = t.ns.slice();
+  });
+  if(!S.sel || !TB[S.sel.t]) S.sel = {t:TIERS[0].id, p:TIERS[0].fixed ? 'fix' : 'live'};
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+function pk(){ return S.sel.t + ':' + S.sel.p; }
+function matches(n){ return TB[S.sel.t].fixed || S.st[n] === S.sel.p; }
+function list(){ return S.ord[S.sel.t].filter(matches); }
+function count(t, p){ return t.ns.filter(function(n){ return S.st[n] === p; }).length; }
+function esc(s){ return String(s).replace(/[&<>]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]; }); }
+
+function openSel(t, p, n){
+  S.sel = {t:t, p:p};
+  var l = list();
+  if(n != null && S.ord[t].indexOf(n) > -1) cur = n;
+  else { var a = S.at[pk()]; cur = (a != null && l.indexOf(a) > -1) ? a : (l.length ? l[0] : null); }
+  revealed = false; picked = null;
+  if(cur != null) S.at[pk()] = cur;
+  save(); render(); window.scrollTo(0,0);
+}
+function step(d){
+  var o = S.ord[S.sel.t], L = o.length;
+  if(!L) return;
+  var i = cur == null ? (d > 0 ? -1 : 0) : o.indexOf(cur), found = null;
+  for(var k = 1; k <= L; k++){ var n = o[((i + d*k) % L + L) % L]; if(matches(n)){ found = n; break; } }
+  cur = found; revealed = false; picked = null;
+  if(cur != null) S.at[pk()] = cur;
+  save(); render(); window.scrollTo(0,0);
+}
+function shuffle(){
+  var o = S.ord[S.sel.t];
+  for(var i = o.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var x = o[i]; o[i] = o[j]; o[j] = x; }
+  var l = list(); cur = l.length ? l[0] : null; revealed = false; picked = null;
+  if(cur != null) S.at[pk()] = cur;
+  save(); render(); window.scrollTo(0,0);
+}
+function file(p){
+  if(cur == null || TB[S.sel.t].fixed) return;
+  S.st[cur] = p; save(); render(true);
+}
+function pick(k){
+  if(picked !== null || cur == null) return;
+  var it = BY[cur]; picked = k; revealed = true;
+  if(!TB[S.sel.t].fixed){ picked_prev = S.st[cur]; S.st[cur] = (k === it.c) ? 'known' : 'live'; save(); }
+  render(true);
+}
+var picked_prev = null;
+function resetTier(id){
+  var t = TB[id];
+  if(!confirm('Put all ' + t.ns.length + ' questions of “' + t.name + '” back into Live?')) return;
+  t.ns.forEach(function(n){ S.st[n] = 'live'; });
+  delete S.at[id + ':known'];
+  openSel(id, 'live');
+}
+
+function renderLevels(){
+  var h = '';
+  TIERS.forEach(function(t){
+    var lc = 'var(--' + t.lvl + ')';
+    if(t.fixed){
+      var on = S.sel.t === t.id;
+      h += '<div class="lv fixed" style="--lc:' + lc + '"><button class="fixbtn' + (on ? ' on' : '') + '" data-t="' + t.id + '" data-p="fix">' +
+           '<span class="num">' + t.ns.length + '</span><b>' + esc(t.name) + '</b><small>' + esc(t.sub) + '</small></button></div>';
+      return;
+    }
+    var nl = count(t, 'live'), nk = count(t, 'known');
+    h += '<div class="lv" style="--lc:' + lc + '">' +
+      '<div class="name"><b>' + esc(t.name) + '</b><small>' + t.ns.length + ' question' + (t.ns.length === 1 ? '' : 's') + (t.sub ? ' · ' + esc(t.sub) : '') + '</small></div>' +
+      '<button class="pb live' + (S.sel.t === t.id && S.sel.p === 'live' ? ' on' : '') + '" data-t="' + t.id + '" data-p="live"><span class="num">' + nl + '</span><span class="lbl">Live</span></button>' +
+      '<button class="pb known' + (S.sel.t === t.id && S.sel.p === 'known' ? ' on' : '') + '" data-t="' + t.id + '" data-p="known"><span class="num">' + nk + '</span><span class="lbl">Known</span></button>' +
+      '<button class="rst" data-r="' + t.id + '" title="All back to Live" aria-label="Put all of this level back into Live">↺</button>' +
+      '</div>';
+  });
+  $('levels').innerHTML = h;
+}
+
+function cardHTML(it){
+  var h = '<div class="qnum">' + it.label + '</div>' + it.body;
+  if(it.k === 'mcq'){
+    var done = picked !== null;
+    h += '<ul class="opts' + (done ? ' locked' : '') + '">';
+    it.opts.forEach(function(o){
+      var cls = 'opt';
+      if(done){ if(o[0] === it.c) cls += ' correct'; else if(o[0] === picked) cls += ' wrong'; else cls += ' dim'; }
+      h += '<li class="' + cls + '" data-k="' + o[0] + '"><span class="k">' + o[0] + '.</span><span>' + o[1] + '</span></li>';
+    });
+    h += '</ul>';
+    if(done){
+      var ok = picked === it.c, fixed = TB[S.sel.t].fixed, msg;
+      if(fixed) msg = ok ? '✓ Correct' : '✗ Wrong — the answer is ' + it.c;
+      else if(ok) msg = '✓ Correct — ' + (picked_prev === 'known' ? 'stays in Known' : 'moved to Known');
+      else msg = '✗ Wrong — the answer is ' + it.c + (picked_prev === 'known' ? ' · moved back to Live' : ' · stays in Live');
+      h += '<div class="verdict ' + (ok ? 'ok' : 'no') + '">' + msg + '</div>';
+    } else h += '<div class="tap">Tap the answer you think is correct</div>';
+  } else if(revealed){
+    h += '<div class="answer"><div class="al">Απάντηση</div>';
+    if(it.ans) h += '<div class="at">' + it.ans + '</div>';
+    if(it.aimg) h += '<img alt="" src="' + it.aimg + '">';
+    h += '</div>';
+  }
+  return h;
+}
+
+function render(stay){
+  renderLevels();
+  var t = TB[S.sel.t], l = list();
+  var card = $('card'), ctr = $('controls');
+  card.style.setProperty('--lc', 'var(--' + t.lvl + ')');
+  $('studying').innerHTML = 'Studying <b>' + esc(t.name) + (t.fixed ? '' : ' · ' + (S.sel.p === 'live' ? 'Live' : 'Known')) + '</b>';
+  $('prev').disabled = $('next').disabled = $('shuffle').disabled = !l.length;
+  if(cur == null || S.ord[t.id].indexOf(cur) < 0){
+    $('counter').textContent = '0 / 0';
+    card.innerHTML = '<div class="empty">' + (S.sel.p === 'known'
+      ? 'Nothing in Known here yet.'
+      : 'Live is empty — everything in this level is Known.<br>Tap <b>↺</b> to put it all back into Live.') + '</div>';
+    ctr.innerHTML = '';
+    return;
+  }
+  var it = BY[cur], pos = l.indexOf(cur);
+  $('counter').textContent = (pos > -1 ? (pos + 1) : '–') + ' / ' + l.length;
+  card.innerHTML = cardHTML(it);
+
+  var c = '';
+  if(it.k !== 'mcq' && !revealed) c += '<button class="big" id="show">Show answer</button>';
+  var answered = it.k === 'mcq' ? picked !== null : revealed;
+  if(answered && !t.fixed){
+    var s = S.st[cur];
+    c += '<div class="sortrow">' +
+      '<button class="s-live' + (s === 'live' ? ' cur' : '') + '" data-f="live">Live<small>see again</small></button>' +
+      '<button class="s-known' + (s === 'known' ? ' cur' : '') + '" data-f="known">Known<small>I know it</small></button></div>';
+  }
+  ctr.innerHTML = c;
+}
+
+$('levels').addEventListener('click', function(e){
+  var r = e.target.closest('[data-r]'); if(r){ resetTier(r.dataset.r); return; }
+  var b = e.target.closest('[data-t]'); if(!b) return;
+  openSel(b.dataset.t, b.dataset.p);
+});
+$('card').addEventListener('click', function(e){
+  var li = e.target.closest('.opt[data-k]'); if(li) pick(li.dataset.k);
+});
+$('controls').addEventListener('click', function(e){
+  if(e.target.closest('#show')){ revealed = true; render(true); return; }
+  var f = e.target.closest('[data-f]'); if(f) file(f.dataset.f);
+});
+$('next').addEventListener('click', function(){ step(1); });
+$('prev').addEventListener('click', function(){ step(-1); });
+$('shuffle').addEventListener('click', shuffle);
+
+/* go to question */
+(function(){
+  var inp = $('gotoN'), msg = $('gotoMsg');
+  var all = ITEMS.map(function(i){ return i.n; }).sort(function(a,b){ return a-b; });
+  function go(){
+    var v = parseInt(inp.value, 10);
+    if(!BY[v]){ msg.textContent = 'In this app: ' + all.join(', '); return; }
+    var tid = TIER_OF[v], extra = '';
+    if(tid == null){ tid = TIERS.filter(function(t){ return t.ns.indexOf(v) > -1; })[0].id; openSel(tid, 'fix', v); }
+    else openSel(tid, S.st[v], v);
+    var also = TIERS.filter(function(t){ return t.fixed && t.id !== tid && t.ns.indexOf(v) > -1; });
+    if(also.length) extra = ' (also in ' + also.map(function(t){ return t.name; }).join(', ') + ')';
+    var t = TB[tid];
+    msg.textContent = 'Question ' + v + ' — in ' + t.name + (t.fixed ? '' : ' · ' + (S.st[v] === 'live' ? 'Live' : 'Known')) + extra;
+    inp.value = ''; inp.blur();
+  }
+  $('gotoBtn').addEventListener('click', go);
+  inp.addEventListener('keydown', function(e){ e.stopPropagation(); if(e.key === 'Enter'){ e.preventDefault(); go(); } });
+  inp.addEventListener('input', function(){ msg.textContent = ''; });
+})();
+
+/* backup / restore / reset */
+$('backup').addEventListener('click', function(){
+  var txt = JSON.stringify({app:APP.id, saved:new Date().toISOString(), state:S});
+  var d = new Date(), p = function(n){ return String(n).padStart(2,'0'); };
+  var name = APP.id + '-backup-' + d.getFullYear() + p(d.getMonth()+1) + p(d.getDate()) + '-' + p(d.getHours()) + p(d.getMinutes()) + '.json';
+  try{
+    var url = URL.createObjectURL(new Blob([txt], {type:'application/json'}));
+    var a = document.createElement('a'); a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+  }catch(e){ prompt('Copy this backup text and keep it somewhere safe:', txt); }
+});
+$('restore').addEventListener('click', function(){ $('restoreFile').click(); });
+$('restoreFile').addEventListener('change', function(ev){
+  var f = ev.target.files && ev.target.files[0]; ev.target.value = '';
+  if(!f) return;
+  var r = new FileReader();
+  r.onload = function(){
+    try{
+      var d = JSON.parse(r.result);
+      if(!d || d.app !== APP.id || !d.state || !d.state.st) throw 0;
+      var k = 0; FILING.forEach(function(t){ t.ns.forEach(function(n){ if(d.state.st[n] === 'known') k++; }); });
+      if(!confirm('Restore this backup? ' + k + ' question(s) in Known. Your current progress will be replaced.')) return;
+      S = d.state; save(); load(); openSel(S.sel.t, S.sel.p);
+    }catch(e){ alert('That file is not a backup from this app.'); }
+  };
+  r.readAsText(f);
+});
+$('resetAll').addEventListener('click', function(){
+  if(!confirm('Put every question back into Live in every level?')) return;
+  FILING.forEach(function(t){ t.ns.forEach(function(n){ S.st[n] = 'live'; }); });
+  S.at = {}; S.ord = {}; save(); load();
+  openSel(TIERS[0].id, TIERS[0].fixed ? 'fix' : 'live');
+});
+
+$('foot').textContent = ITEMS.length + ' questions · November 2026';
+load();
+openSel(S.sel.t, S.sel.p);
+})();
+</script>
+<script>if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){});});}</script>
+</body>
+</html>
